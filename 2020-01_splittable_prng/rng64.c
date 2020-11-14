@@ -1,4 +1,4 @@
-#include "mlvm/sprng/sprng64.h"
+#include "rng64.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -63,7 +63,7 @@ static uint64_t sprng64_mix64(uint64_t z) {
   return z ^ (z >> 33);
 }
 
-static uint64_t sprng64_advance_seed(sprng64_t* prng) {
+static uint64_t sprng64_advance_seed(rng64t* prng) {
   /* Advance one more coefficient at current level. */
   return (prng->seed_ = sprng64_update(prng->seed_, prng->gamma_));
 }
@@ -74,15 +74,15 @@ static uint64_t sprng64_mix56(uint64_t z) {
   return z ^ (z >> 33);
 }
 
-sprng64_t* sprng64_create(uint64_t seed) {
+rng64t* rng64Create(uint64_t seed) {
   return sprng64_create_with_gamma(seed, /*gamma_seed=*/0L);
 }
 
-sprng64_t* sprng64_create_with_gamma(uint64_t seed, uint64_t gamma_seed) {
-  sprng64_t* prng;
+rng64t* sprng64_create_with_gamma(uint64_t seed, uint64_t gamma_seed) {
+  rng64t* prng;
 
   assert(gamma_seed < gamma_prime_);
-  prng = malloc(sizeof(sprng64_t));
+  prng = malloc(sizeof(rng64t));
 
   prng->seed_ = seed;
   gamma_seed += gamma_gamma_;
@@ -92,22 +92,22 @@ sprng64_t* sprng64_create_with_gamma(uint64_t seed, uint64_t gamma_seed) {
   return prng;
 }
 
-sprng64_t* sprng64_split(sprng64_t* prng) {
+rng64t* sprng64_split(rng64t* prng) {
   uint64_t seed       = sprng64_advance_seed(prng);
   uint64_t gamma_seed = prng->next_gamma_seed_;
   return sprng64_create_with_gamma(seed, gamma_seed);
 }
 
-void sprng64_free(sprng64_t* prng) { free(prng); }
+void sprng64_free(rng64t* prng) { free(prng); }
 
-uint64_t sprng64_next_int64(sprng64_t* prng) {
+uint64_t sprng64_next_int64(rng64t* prng) {
   return sprng64_mix64(sprng64_advance_seed(prng));
 }
 
-uint32_t sprng64_next_int32(sprng64_t* prng) {
+uint32_t sprng64_next_int32(rng64t* prng) {
   return (uint32_t)(sprng64_next_int64(prng));
 }
 
-double sprng64_next_double(sprng64_t* prng) {
+double sprng64_next_double(rng64t* prng) {
   return (sprng64_next_int64(prng) >> 11) * double_ulp_;
 }
