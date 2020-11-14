@@ -75,10 +75,10 @@ static uint64_t sprng64_mix56(uint64_t z) {
 }
 
 rng64t* rng64Create(uint64_t seed) {
-  return sprng64_create_with_gamma(seed, /*gamma_seed=*/0L);
+  return rng64CreateWithGamma(seed, /*gamma_seed=*/0L);
 }
 
-rng64t* sprng64_create_with_gamma(uint64_t seed, uint64_t gamma_seed) {
+rng64t* rng64CreateWithGamma(uint64_t seed, uint64_t gamma_seed) {
   rng64t* prng;
 
   assert(gamma_seed < gamma_prime_);
@@ -92,22 +92,22 @@ rng64t* sprng64_create_with_gamma(uint64_t seed, uint64_t gamma_seed) {
   return prng;
 }
 
-rng64t* sprng64_split(rng64t* prng) {
+rng64t* rng64Split(rng64t* prng) {
   uint64_t seed       = sprng64_advance_seed(prng);
   uint64_t gamma_seed = prng->next_gamma_seed_;
-  return sprng64_create_with_gamma(seed, gamma_seed);
+  return rng64CreateWithGamma(seed, gamma_seed);
 }
 
-void sprng64_free(rng64t* prng) { free(prng); }
+void rng64Free(rng64t* prng) { free(prng); }
 
-uint64_t sprng64_next_int64(rng64t* prng) {
+uint64_t rng64NextInt64(rng64t* prng) {
   return sprng64_mix64(sprng64_advance_seed(prng));
 }
 
-uint32_t sprng64_next_int32(rng64t* prng) {
+uint32_t rng64NextInt32(rng64t* prng) {
   return (uint32_t)(sprng64_next_int64(prng));
 }
 
-double sprng64_next_double(rng64t* prng) {
+double rng64NextDouble(rng64t* prng) {
   return (sprng64_next_int64(prng) >> 11) * double_ulp_;
 }
