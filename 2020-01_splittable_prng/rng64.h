@@ -13,7 +13,7 @@ typedef struct {
 
 extern rng64t* rng64Create(uint64_t seed);
 extern rng64t* sprng64_create_with_gamma(uint64_t seed, uint64_t gamma_seed);
-extern void       sprng64_free(rng64t* prng);
+extern void    sprng64_free(rng64t* prng);
 extern rng64t* sprng64_split(rng64t* prng);
 
 extern uint64_t sprng64_next_int64(rng64t* prng);
