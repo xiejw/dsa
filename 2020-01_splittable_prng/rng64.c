@@ -105,9 +105,9 @@ uint64_t rng64NextInt64(rng64t* prng) {
 }
 
 uint32_t rng64NextInt32(rng64t* prng) {
-  return (uint32_t)(sprng64_next_int64(prng));
+  return (uint32_t)(rng64NextInt64(prng));
 }
 
 double rng64NextDouble(rng64t* prng) {
-  return (sprng64_next_int64(prng) >> 11) * double_ulp_;
+  return (rng64NextInt64(prng) >> 11) * double_ulp_;
 }
