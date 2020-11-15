@@ -8,3 +8,6 @@ compile:
 	mkdir -p ${BUILD_DIR} && \
 		${CC} ${CFLAGS} -o ${BUILD_DIR}/main main.c && \
 		echo "run ${BUILD_DIR}/main"
+
+fmt:
+	make -C .. fmt

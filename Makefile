@@ -18,5 +18,7 @@ compile:
 	done
 
 fmt:
-	@echo "fmt" && ${C_FMT} ${LIBS}
+	@for lib in ${LIBS}; do \
+		echo 'fmt' $$lib && ${C_FMT} $$lib; \
+	done
 
