@@ -37,6 +37,7 @@ int main() {
 // Helper methods.
 // -----------------------------------------------------------------------------
 
+// Prints the Soduku Problem on screen.
 void printProblem(int* problem) {
   // header
   printf("+-----+-----+-----+\n");
@@ -62,6 +63,7 @@ void printProblem(int* problem) {
 
 #define POS(x, y) ((x)*SIZE + (y))
 
+// Seach all options that on (x,y) the digit k is allowed to be put there.
 void searchOptions(int* problem) {
   int total = 0;
   if (DEBUG) printf("total 10 options:\n");
