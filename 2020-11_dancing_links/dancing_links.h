@@ -3,39 +3,47 @@
 
 // problem specific.
 typedef struct {
-  int x, y, k;
-  int idx;  // k << 8 + x << 4 + y
-} option;
+  int x, y;  // 0-based coordinate.
+  int k;     // 1-based digit.
+  int idx;   // k << 8 + x << 4 + y
+} optiont;
 
 typedef struct {
   int idx;
-} sdk_data;
-
-struct dlnodet;
-
-typedef void (*dlHeaderNodeFreeFn)(void*);
+} sdkDatat;
 
 // general.
-typedef struct {
-  int                llink;
-  int                rlink;
-  void*              data;
-  dlHeaderNodeFreeFn free_fn;
 
-  struct dlnodet* vheader;
-} dlheadt;
+struct dlNodet;
+typedef void (*dlTopRowNodeFreeFn)(void*);
+
+typedef struct {
+  int total_size;
+  int used;
+} dlTopRowInfot;
+
+typedef struct {
+  int   llink;
+  int   rlink;
+  void* data;  // store user's data for normal node or dlheadinfot for header.
+  dlTopRowNodeFreeFn free_fn;
+
+  struct dlNodet* vheader;
+} dlTopRowNodet;
 
 // prototype
-extern dlheadt* dlCreateHeaderNode(void* user_data, dlHeaderNodeFreeFn free_fn);
-extern void     dlFreeHeaderNode(dlheadt* node);
+extern dlTopRowNodet* dlCreateTopRow(int total_size);
+extern void           dlFreeTopRow(dlTopRowNodet* header);
+extern dlTopRowNodet* dlTopRowCreateNode(dlTopRowNodet* header, void* user_data,
+                                         dlTopRowNodeFreeFn free_fn);
 
-typedef struct dlnodet {
+typedef struct dlNodet {
   union {
     int len;
     int top;
   };
   int ulink;
   int dlink;
-} dlnodet;
+} dlNodet;
 
 #endif
