@@ -6,7 +6,8 @@ main: compile
 
 compile:
 	mkdir -p ${BUILD_DIR} && \
-		${CC} ${CFLAGS} -o ${BUILD_DIR}/main main.c && \
+		${CC} ${CFLAGS} -o ${BUILD_DIR}/dl.o -c dancing_links.c && \
+		${CC} ${CFLAGS} -o ${BUILD_DIR}/main main.c ${BUILD_DIR}/dl.o && \
 		echo "run ${BUILD_DIR}/main"
 
 fmt:
