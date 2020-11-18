@@ -34,8 +34,9 @@ typedef struct {
 // prototype
 extern dlTopRowNodet* dlCreateTopRow(int total_size);
 extern void           dlFreeTopRow(dlTopRowNodet* header);
-extern dlTopRowNodet* dlTopRowCreateNode(dlTopRowNodet* header, void* user_data,
+extern int            dlTopRowCreateNode(dlTopRowNodet* header, void* user_data,
                                          dlTopRowNodeFreeFn free_fn);
+extern void           dlTopRowHideNode(dlTopRowNodet* header, int node_id);
 
 typedef struct dlNodet {
   union {

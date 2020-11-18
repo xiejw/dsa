@@ -17,10 +17,10 @@ dlTopRowNodet* dlCreateTopRow(int total_size) {
 }
 
 void dlFreeTowRow(dlTopRowNodet* header) {
-  int total_size = ((dlTopRowInfot*)header->data)->total_size;
+  int used = ((dlTopRowInfot*)header->data)->used;
 
   dlTopRowNodet* node = header + 1;
-  for (int i = 1; i <= total_size; i++) {
+  for (int i = 1; i <= used; i++) {
     node->free_fn(node->data);
     node++;
   }
@@ -29,13 +29,12 @@ void dlFreeTowRow(dlTopRowNodet* header) {
   free(header);
 }
 
-// This node should be freed. Use dlFreeTowRow.
-dlTopRowNodet* dlTopRowCreateNode(dlTopRowNodet* header, void* user_data,
-                                  dlTopRowNodeFreeFn free_fn) {
+int dlTopRowCreateNode(dlTopRowNodet* header, void* user_data,
+                       dlTopRowNodeFreeFn free_fn) {
   dlTopRowInfot* info = header->data;
 
   int total_size = info->total_size;
-  int next_slot  = info->used + 1;
+  int next_slot  = ++(info->used);
   assert(next_slot <= total_size);
 
   dlTopRowNodet* p = header + next_slot;
@@ -49,5 +48,13 @@ dlTopRowNodet* dlTopRowCreateNode(dlTopRowNodet* header, void* user_data,
   p->llink                       = last_node_id;
   p->rlink                       = 0;  // header;
   header->llink                  = next_slot;
-  return p;
+  return next_slot;
+}
+
+void dlTopRowHideNode(dlTopRowNodet* header, int node_id) {
+  dlTopRowNodet* p    = header + node_id;
+  int            l    = p->llink;
+  int            r    = p->rlink;
+  (header + l)->rlink = r;
+  (header + r)->llink = l;
 }
