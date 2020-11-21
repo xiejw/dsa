@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 
 #include "double_links.h"
@@ -12,6 +13,7 @@ void freeFn(void* d) {}
 // -----------------------------------------------------------------------------
 static void printProblem(int* problem);
 static void searchOptions(int* problem);
+static void debugDoubleLinks();
 
 int main() {
   int problem[SIZE * SIZE] = {
@@ -33,27 +35,8 @@ int main() {
   printProblem(problem);
   searchOptions(problem);
 
-  // dlTopRowNodet* h = dlCreateTopRow(8);
+  debugDoubleLinks();
 
-  // printf("header l %d r %d\n", h->llink, h->rlink);
-
-  // int id1 = dlTopRowCreateNode(h, "a", freeFn);
-  // int id  = id1;
-  // printf("header l %d r %d\n", h->llink, h->rlink);
-  // printf("%6d l %d r %d  %s\n", id, (h + id)->llink, (h + id)->rlink,
-  //        (h + id)->data);
-
-  // int id2 = dlTopRowCreateNode(h, "b", freeFn);
-  // printf("header l %d r %d\n", h->llink, h->rlink);
-
-  // id = id1;
-  // printf("%6d l %d r %d  %s\n", id, (h + id)->llink, (h + id)->rlink,
-  //        (h + id)->data);
-  // id = id2;
-  // printf("%6d l %d r %d  %s\n", id, (h + id)->llink, (h + id)->rlink,
-  //        (h + id)->data);
-
-  // dlFreeTopRow(h);
   return 0;
 }
 
@@ -157,4 +140,40 @@ void getItemIndex(int i, int j, int k, int* p, int* r, int* c, int* b) {
   offset += SIZE * SIZE;
 
   *b = x * SIZE + k;
+}
+
+// Debugging only
+void debugDoubleLinks() {
+  dlNodet* h = dlCreate(8);
+
+#define PRINT_HEADER(h) printf("header l %d r %d\n", h->llink, h->rlink)
+#define PRINT_NODE(h, id)                                             \
+  printf("%6d l %d r %d  %s\n", id, (h + id)->llink, (h + id)->rlink, \
+         (h + id)->data);
+
+  int id1 = dlCreateNode(h, "a", freeFn);
+  assert(id1 == 1);
+  PRINT_HEADER(h);
+  PRINT_NODE(h, 1);
+
+  int id2 = dlCreateNode(h, "b", freeFn);
+  assert(id2 == 2);
+  PRINT_HEADER(h);
+  PRINT_NODE(h, 1);
+  PRINT_NODE(h, 2);
+
+  int id3 = dlCreateNode(h, "c", freeFn);
+  assert(id3 == 3);
+  PRINT_HEADER(h);
+  PRINT_NODE(h, 1);
+  PRINT_NODE(h, 2);
+  PRINT_NODE(h, 3);
+
+  dlHideNode(h, 2);
+  PRINT_HEADER(h);
+  PRINT_NODE(h, 1);
+  PRINT_NODE(h, 2);
+  PRINT_NODE(h, 3);
+
+  dlFree(h);
 }
