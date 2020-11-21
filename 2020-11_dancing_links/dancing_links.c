@@ -16,7 +16,7 @@ dlTopRowNodet* dlCreateTopRow(int total_size) {
   return p;
 }
 
-void dlFreeTowRow(dlTopRowNodet* header) {
+void dlFreeTopRow(dlTopRowNodet* header) {
   int used = ((dlTopRowInfot*)header->data)->used;
 
   dlTopRowNodet* node = header + 1;
