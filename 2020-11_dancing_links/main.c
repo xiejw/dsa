@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "dancing_links.h"
+#include "double_links.h"
 
 #define SIZE  9
 #define DEBUG 1
@@ -33,27 +33,27 @@ int main() {
   printProblem(problem);
   searchOptions(problem);
 
-  dlTopRowNodet* h = dlCreateTopRow(8);
+  // dlTopRowNodet* h = dlCreateTopRow(8);
 
-  printf("header l %d r %d\n", h->llink, h->rlink);
+  // printf("header l %d r %d\n", h->llink, h->rlink);
 
-  int id1 = dlTopRowCreateNode(h, "a", freeFn);
-  int id  = id1;
-  printf("header l %d r %d\n", h->llink, h->rlink);
-  printf("%6d l %d r %d  %s\n", id, (h + id)->llink, (h + id)->rlink,
-         (h + id)->data);
+  // int id1 = dlTopRowCreateNode(h, "a", freeFn);
+  // int id  = id1;
+  // printf("header l %d r %d\n", h->llink, h->rlink);
+  // printf("%6d l %d r %d  %s\n", id, (h + id)->llink, (h + id)->rlink,
+  //        (h + id)->data);
 
-  int id2 = dlTopRowCreateNode(h, "b", freeFn);
-  printf("header l %d r %d\n", h->llink, h->rlink);
+  // int id2 = dlTopRowCreateNode(h, "b", freeFn);
+  // printf("header l %d r %d\n", h->llink, h->rlink);
 
-  id = id1;
-  printf("%6d l %d r %d  %s\n", id, (h + id)->llink, (h + id)->rlink,
-         (h + id)->data);
-  id = id2;
-  printf("%6d l %d r %d  %s\n", id, (h + id)->llink, (h + id)->rlink,
-         (h + id)->data);
+  // id = id1;
+  // printf("%6d l %d r %d  %s\n", id, (h + id)->llink, (h + id)->rlink,
+  //        (h + id)->data);
+  // id = id2;
+  // printf("%6d l %d r %d  %s\n", id, (h + id)->llink, (h + id)->rlink,
+  //        (h + id)->data);
 
-  dlFreeTopRow(h);
+  // dlFreeTopRow(h);
   return 0;
 }
 
