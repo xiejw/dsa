@@ -7,7 +7,7 @@ C_FMT=docker run --rm -ti \
 			-v `pwd`:/workdir xiejw/clang-format \
 			/clang-format.sh
 
-LIBS=2020-01_splittable_prng 2020-10_skiplist 2020-11_dancing_links
+LIBS=2020-01_splittable_prng 2020-10_skiplist 2020-11_dancing_links 2021_bloom_filter
 
 # -----------------------------------------------------------------------------
 # actions.
