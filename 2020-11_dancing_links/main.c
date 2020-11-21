@@ -139,3 +139,22 @@ void searchOptions(int* problem) {
   }
   if (DEBUG) printf("in total %d options\n", total);
 }
+
+// p{i,j}, r{i,k} c{j,k} b{x,k}  x=3 * floor(i/3) + floor(j/3)
+void getItemIndex(int i, int j, int k, int* p, int* r, int* c, int* b) {
+  int x      = 3 * (i / 3) + (j / 3);
+  int offset = 0;
+
+  k = k - 1;  // k is 1 based.
+
+  *p = i * SIZE + j + offset;
+  offset += SIZE * SIZE;
+
+  *r = i * SIZE + k + offset;
+  offset += SIZE * SIZE;
+
+  *c = j * SIZE + k + offset;
+  offset += SIZE * SIZE;
+
+  *b = x * SIZE + k;
+}
