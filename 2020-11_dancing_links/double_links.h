@@ -11,9 +11,12 @@ typedef struct {
 } dlInfot;
 
 typedef struct {
-  int          llink;
-  int          rlink;
-  void*        data;  // store user's data or dlInfot in header.
+  int llink;
+  int rlink;
+  union {
+    void* data;  // store user's data or dlInfot in header.
+    int   id;
+  };
   dlNodeFreeFn free_fn;
 } dlNodet;
 

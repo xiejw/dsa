@@ -2,10 +2,13 @@
 #define DANCING_LINKS_
 
 typedef struct {
+  int id;
   union {
     int len;
     int top;
   };
-} dancingDatat;
+  int ulink;
+  int dlink;
+} dancingNodet;
 
 #endif

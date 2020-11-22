@@ -23,7 +23,9 @@ void dlFree(dlNodet* h) {
 
   dlNodet* node = h + 1;
   for (int i = 1; i <= used; i++) {
-    node->free_fn(node->data);
+    if (node->free_fn != NULL) {
+      node->free_fn(node->data);
+    }
     node++;
   }
 

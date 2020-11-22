@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "dancing_links.h"
 #include "double_links.h"
@@ -15,8 +16,6 @@ static int  searchOptions(int* problem);
 static void getItemId(int i, int j, int k, int* p, int* r, int* c, int* b);
 // static void debugDoubleLinks();
 //
-void freeVListFn(void* data) { dlFree(((dlNodet*)data)); }
-
 int main() {
   int problem[SIZE * SIZE] = {
       // clang-format off
@@ -40,8 +39,7 @@ int main() {
   {
     dlNodet* top_row = dlCreate(4 * SIZE * SIZE);
     for (int i = 0; i < 4 * SIZE * SIZE; i++) {
-      dlNodet* vlist = dlCreate(options_count);  // upper bound
-      dlCreateNode(top_row, vlist, freeVListFn);
+      dlCreateNode(top_row, NULL, NULL);
     }
 
     // hides all items in table already.
@@ -77,12 +75,51 @@ int main() {
       assert(item_count == count);
       printf("total items before searching: %d\n", count);
     }
+
+    // header
     // all items
     // first spacer
     // 1 spacers + 4 items for each option.
-    dlNodet* opt_row = dlCreate(item_count + 1 + ((1 + 4) * options_count));
+    dancingNodet* opt_row =
+        malloc((1 + item_count + 1 + ((1 + 4) * options_count)) *
+               sizeof(dancingNodet));
+    int opt_count = 0;
 
-    dlFree(opt_row);
+    opt_row[0].id = 0;  // unused.
+    opt_count++;
+
+    {
+      p = 0;
+      while (1) {
+        p = (top_row + p)->rlink;
+        if (p == 0) {
+          break;
+        }
+        int opt_id          = opt_count;  // 1-based.
+        top_row[p].id       = opt_id;
+        dancingNodet* opt_p = opt_row + opt_id;
+        opt_p->len          = 0;
+        opt_p->id           = opt_id;
+        opt_p->ulink        = opt_id;
+        opt_p->dlink        = opt_id;
+        opt_count++;
+      }
+    }
+
+    // first spacer.
+
+    int spacer_count   = 0;
+    int last_spacer_id = opt_count;
+
+    {
+      dancingNodet* opt_p = opt_row + last_spacer_id;
+      opt_p->id           = last_spacer_id;
+      opt_p->top          = 0;
+      opt_count++;
+      spacer_count++;
+    }
+
+    free(opt_row);
     dlFree(top_row);
   }
 
