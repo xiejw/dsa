@@ -11,9 +11,11 @@
 // Prototypes.
 // -----------------------------------------------------------------------------
 static void printProblem(int* problem);
-static void searchOptions(int* problem);
+static int  searchOptions(int* problem);
 static void getItemId(int i, int j, int k, int* p, int* r, int* c, int* b);
 // static void debugDoubleLinks();
+//
+void freeVListFn(void* data) { dlFree(((dlNodet*)data)); }
 
 int main() {
   int problem[SIZE * SIZE] = {
@@ -33,15 +35,17 @@ int main() {
   };
 
   printProblem(problem);
-  searchOptions(problem);
+  int options_count = searchOptions(problem);
 
   {
     dlNodet* top_row = dlCreate(4 * SIZE * SIZE);
     for (int i = 0; i < 4 * SIZE * SIZE; i++) {
-      dlCreateNode(top_row, NULL, DL_NO_FREE);
+      dlNodet* vlist = dlCreate(options_count);  // upper bound
+      dlCreateNode(top_row, vlist, freeVListFn);
     }
 
     // hides all items in table already.
+    int hidden_items_count = 0;
     int p, r, c, b;
     for (int x = 0; x < SIZE; x++) {
       int offset = x * SIZE;
@@ -54,21 +58,31 @@ int main() {
         dlHideNode(top_row, r);
         dlHideNode(top_row, c);
         dlHideNode(top_row, b);
+        hidden_items_count += 4;
       }
     }
 
-    int count = 0;
-    p         = 0;
-    while (1) {
-      p = (top_row + p)->rlink;
-      if (p == 0) {
-        break;
+    int item_count = 4 * SIZE * SIZE - hidden_items_count;
+
+    if (DEBUG) {
+      int count = 0;
+      p         = 0;
+      while (1) {
+        p = (top_row + p)->rlink;
+        if (p == 0) {
+          break;
+        }
+        count++;
       }
-      count++;
+      assert(item_count == count);
+      printf("total items before searching: %d\n", count);
     }
+    // all items
+    // first spacer
+    // 1 spacers + 4 items for each option.
+    dlNodet* opt_row = dlCreate(item_count + 1 + ((1 + 4) * options_count));
 
-    printf("total items: %d\n", count);
-
+    dlFree(opt_row);
     dlFree(top_row);
   }
 
@@ -108,7 +122,7 @@ void printProblem(int* problem) {
 #define POS(x, y) ((x)*SIZE + (y))
 
 // Seach all options that on (x,y) the digit k is allowed to be put there.
-void searchOptions(int* problem) {
+int searchOptions(int* problem) {
   int total = 0;
   if (DEBUG) printf("total 10 options:\n");
 
@@ -158,6 +172,7 @@ void searchOptions(int* problem) {
     }
   }
   if (DEBUG) printf("in total %d options\n", total);
+  return total;
 }
 
 // p{i,j}, r{i,k} c{j,k} b{x,k}  x=3 * floor(i/3) + floor(j/3)
