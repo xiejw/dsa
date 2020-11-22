@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include "dancing_links.h"
 #include "double_links.h"
 
 #define SIZE  9
@@ -35,7 +36,7 @@ int main() {
   printProblem(problem);
   searchOptions(problem);
 
-  debugDoubleLinks();
+  // debugDoubleLinks();
 
   return 0;
 }
