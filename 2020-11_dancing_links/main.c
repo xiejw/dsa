@@ -99,9 +99,9 @@ int main() {
         top_row[p].id       = opt_id;
         dancingNodet* opt_p = opt_row + opt_id;
         opt_p->len          = 0;
-        opt_p->id           = opt_id;
-        opt_p->ulink        = opt_id;
-        opt_p->dlink        = opt_id;
+        opt_p->id           = opt_id;  // self
+        opt_p->ulink        = opt_id;  // self
+        opt_p->dlink        = opt_id;  // self
         opt_count++;
       }
     }
@@ -112,6 +112,7 @@ int main() {
     int last_spacer_id = opt_count;
 
     {
+      // ulink unused, rlink will be set later.
       dancingNodet* opt_p = opt_row + last_spacer_id;
       opt_p->id           = last_spacer_id;
       opt_p->top          = 0;
