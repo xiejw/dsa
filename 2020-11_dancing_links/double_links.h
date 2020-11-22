@@ -2,6 +2,8 @@
 #define DOUBLE_LINKS_
 
 typedef void (*dlNodeFreeFn)(void*);
+extern void _dlNoFreeFn(void* d);
+#define DL_NO_FREE _dlNoFreeFn
 
 typedef struct {
   int total_size;

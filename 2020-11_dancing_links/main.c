@@ -7,14 +7,13 @@
 #define SIZE  9
 #define DEBUG 1
 
-void freeFn(void* d) {}
-
 // -----------------------------------------------------------------------------
 // Prototypes.
 // -----------------------------------------------------------------------------
 static void printProblem(int* problem);
 static void searchOptions(int* problem);
-static void debugDoubleLinks();
+static void getItemId(int i, int j, int k, int* p, int* r, int* c, int* b);
+// static void debugDoubleLinks();
 
 int main() {
   int problem[SIZE * SIZE] = {
@@ -35,6 +34,43 @@ int main() {
 
   printProblem(problem);
   searchOptions(problem);
+
+  {
+    dlNodet* top_row = dlCreate(4 * SIZE * SIZE);
+    for (int i = 0; i < 4 * SIZE * SIZE; i++) {
+      dlCreateNode(top_row, NULL, DL_NO_FREE);
+    }
+
+    // hides all items in table already.
+    int p, r, c, b;
+    for (int x = 0; x < SIZE; x++) {
+      int offset = x * SIZE;
+      for (int y = 0; y < SIZE; y++) {
+        int k = problem[offset + y];
+        if (k == 0) continue;
+
+        getItemId(x, y, k, &p, &r, &c, &b);
+        dlHideNode(top_row, p);
+        dlHideNode(top_row, r);
+        dlHideNode(top_row, c);
+        dlHideNode(top_row, b);
+      }
+    }
+
+    int count = 0;
+    p         = 0;
+    while (1) {
+      p = (top_row + p)->rlink;
+      if (p == 0) {
+        break;
+      }
+      count++;
+    }
+
+    printf("total items: %d\n", count);
+
+    dlFree(top_row);
+  }
 
   // debugDoubleLinks();
 
@@ -125,22 +161,24 @@ void searchOptions(int* problem) {
 }
 
 // p{i,j}, r{i,k} c{j,k} b{x,k}  x=3 * floor(i/3) + floor(j/3)
-void getItemIndex(int i, int j, int k, int* p, int* r, int* c, int* b) {
+//
+// 1-based
+void getItemId(int i, int j, int k, int* p, int* r, int* c, int* b) {
   int x      = 3 * (i / 3) + (j / 3);
   int offset = 0;
 
   k = k - 1;  // k is 1 based.
 
-  *p = i * SIZE + j + offset;
+  *p = i * SIZE + j + offset + 1;  // item id is 1 based.
   offset += SIZE * SIZE;
 
-  *r = i * SIZE + k + offset;
+  *r = i * SIZE + k + offset + 1;  // item id is 1 based.
   offset += SIZE * SIZE;
 
-  *c = j * SIZE + k + offset;
+  *c = j * SIZE + k + offset + 1;  // item id is 1 based.
   offset += SIZE * SIZE;
 
-  *b = x * SIZE + k;
+  *b = x * SIZE + k + offset + 1;  // item id is 1 based.
 }
 
 // Debugging only
@@ -152,18 +190,18 @@ void debugDoubleLinks() {
   printf("%6d l %d r %d  %s\n", id, (h + id)->llink, (h + id)->rlink, \
          (h + id)->data);
 
-  int id1 = dlCreateNode(h, "a", freeFn);
+  int id1 = dlCreateNode(h, "a", DL_NO_FREE);
   assert(id1 == 1);
   PRINT_HEADER(h);
   PRINT_NODE(h, 1);
 
-  int id2 = dlCreateNode(h, "b", freeFn);
+  int id2 = dlCreateNode(h, "b", DL_NO_FREE);
   assert(id2 == 2);
   PRINT_HEADER(h);
   PRINT_NODE(h, 1);
   PRINT_NODE(h, 2);
 
-  int id3 = dlCreateNode(h, "c", freeFn);
+  int id3 = dlCreateNode(h, "c", DL_NO_FREE);
   assert(id3 == 3);
   PRINT_HEADER(h);
   PRINT_NODE(h, 1);

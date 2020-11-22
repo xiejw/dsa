@@ -57,3 +57,5 @@ void dlHideNode(dlNodet* h, int node_id) {
   (h + l)->rlink = r;
   (h + r)->llink = l;
 }
+
+void _dlNoFreeFn(void* d) {}
