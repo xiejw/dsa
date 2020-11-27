@@ -9,8 +9,10 @@ const (
 	Debug = true
 )
 
+type Problem [Size * Size]int
+
 func main() {
-	problem := [Size * Size]int{
+	problem := Problem{
 		0, 0, 3, 0, 1, 0, 0, 0, 0,
 		4, 1, 5, 0, 0, 0, 0, 9, 0,
 		2, 0, 6, 5, 0, 0, 3, 0, 0,
@@ -24,7 +26,7 @@ func main() {
 		3, 2, 0, 0, 0, 7, 9, 5, 0,
 	}
 
-	fmt.Printf("%v\n", problem)
+	problem.Print()
 }
 
 //
@@ -124,33 +126,38 @@ func main() {
 //   return 0;
 // }
 //
-// // -----------------------------------------------------------------------------
-// // Helper methods.
-// // -----------------------------------------------------------------------------
-//
-// // Prints the Soduku Problem on screen.
-// void printProblem(int* problem) {
-//   // header
-//   printf("+-----+-----+-----+\n");
-//   for (int x = 0; x < Size; x++) {
-//     int offset = x * Size;
-//     printf("|");
-//     for (int y = 0; y < Size; y++) {
-//       int num = problem[offset + y];
-//       if (num == 0)
-//         printf(" ");
-//       else
-//         printf("%d", problem[offset + y]);
-//
-//       if ((y + 1) % 3 != 0)
-//         printf(" ");
-//       else
-//         printf("|");
-//     }
-//     printf("\n");
-//     if ((x + 1) % 3 == 0) printf("+-----+-----+-----+\n");
-//   }
-// }
+// -----------------------------------------------------------------------------
+// Helper methods.
+// -----------------------------------------------------------------------------
+
+// Prints the Soduku Problem on screen.
+func (p Problem) Print() {
+	// header
+	fmt.Printf("+-----+-----+-----+\n")
+	for x := 0; x < Size; x++ {
+		offset := x * Size
+		fmt.Printf("|")
+		for y := 0; y < Size; y++ {
+			num := p[offset+y]
+			if num == 0 {
+				fmt.Printf(" ")
+			} else {
+				fmt.Printf("%d", p[offset+y])
+			}
+
+			if (y+1)%3 != 0 {
+				fmt.Printf(" ")
+			} else {
+				fmt.Printf("|")
+			}
+		}
+		fmt.Printf("\n")
+		if (x+1)%3 == 0 {
+			fmt.Printf("+-----+-----+-----+\n")
+		}
+	}
+}
+
 //
 // #define POS(x, y) ((x)*Size + (y))
 //
