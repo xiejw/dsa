@@ -9,7 +9,7 @@ const (
 	Debug = true
 )
 
-type Problem [Size * Size]int
+type Problem []int
 
 func main() {
 	problem := Problem{
@@ -27,10 +27,9 @@ func main() {
 	}
 
 	problem.Print()
+	problem.SearchOptions()
 }
 
-//
-//   printProblem(problem);
 //   int options_count = searchOptions(problem);
 //
 //   {
@@ -70,7 +69,7 @@ func main() {
 //         count++;
 //       }
 //       assert(item_count == count);
-//       printf("total items before searching: %d\n", count);
+//       fmt.Printf("total items before searching: %d\n", count);
 //     }
 //
 //     // header
@@ -125,9 +124,9 @@ func main() {
 //
 //   return 0;
 // }
-//
+
 // -----------------------------------------------------------------------------
-// Helper methods.
+// Problem.
 // -----------------------------------------------------------------------------
 
 // Prints the Soduku Problem on screen.
@@ -158,62 +157,65 @@ func (p Problem) Print() {
 	}
 }
 
-//
-// #define POS(x, y) ((x)*Size + (y))
-//
-// // Seach all options that on (x,y) the digit k is allowed to be put there.
-// int searchOptions(int* problem) {
-//   int total = 0;
-//   if (DEBUG) printf("total 10 options:\n");
-//
-//   for (int x = 0; x < Size; x++) {
-//     int offset = x * Size;
-//
-//     for (int y = 0; y < Size; y++) {
-//       if (problem[offset + y] > 0) continue;  // prefilled.
-//
-//       int box_x = (x / 3) * 3;
-//       int box_y = (y / 3) * 3;
-//
-//       for (int k = 1; k <= Size; k++) {
-//         // search row
-//         for (int j = 0; j < Size; j++) {
-//           if (problem[j + offset] == k) {
-//             goto not_a_option;
-//           }
-//         }
-//         // search column
-//         for (int j = 0; j < Size; j++) {
-//           if (problem[POS(j, y)] == k) {
-//             goto not_a_option;
-//           }
-//         }
-//
-//         // search box. static unroll
-//         if (problem[POS(box_x, box_y)] == k ||
-//             problem[POS(box_x, box_y + 1)] == k ||
-//             problem[POS(box_x, box_y + 2)] == k ||
-//             problem[POS(box_x + 1, box_y)] == k ||
-//             problem[POS(box_x + 1, box_y + 1)] == k ||
-//             problem[POS(box_x + 1, box_y + 2)] == k ||
-//             problem[POS(box_x + 2, box_y)] == k ||
-//             problem[POS(box_x + 2, box_y + 1)] == k ||
-//             problem[POS(box_x + 2, box_y + 2)] == k) {
-//           goto not_a_option;
-//         }
-//
-//         total++;
-//         if (DEBUG && total < 10) {
-//           printf("  x %d, y %d, k %d\n", x, y, k);
-//         }
-//       not_a_option:
-//         (void)0;
-//       }
-//     }
-//   }
-//   if (DEBUG) printf("in total %d options\n", total);
-//   return total;
-// }
+// Seach all options that on (x,y) the digit k is allowed to be put there.
+func (p Problem) SearchOptions() int {
+	total := 0
+	if Debug {
+		fmt.Printf("total 10 options:\n")
+	}
+
+	for x := 0; x < Size; x++ {
+		offset := x * Size
+
+		for y := 0; y < Size; y++ {
+			if p[offset+y] > 0 {
+				continue // prefilled.
+			}
+
+			box_x := (x / 3) * 3
+			box_y := (y / 3) * 3
+
+			for k := 1; k <= Size; k++ {
+				// search row
+				for j := 0; j < Size; j++ {
+					if p[j+offset] == k {
+						goto not_a_option
+					}
+				}
+				// search column
+				for j := 0; j < Size; j++ {
+					if p[j*Size+y] == k {
+						goto not_a_option
+					}
+				}
+
+				// search box. static unroll
+				if p[(box_x*Size+box_y)] == k ||
+					p[(box_x*Size+box_y+1)] == k ||
+					p[(box_x*Size+box_y+2)] == k ||
+					p[((box_x+1)*Size+box_y)] == k ||
+					p[((box_x+1)*Size+box_y+1)] == k ||
+					p[((box_x+1)*Size+box_y+2)] == k ||
+					p[((box_x+2)*Size+box_y)] == k ||
+					p[((box_x+2)*Size+box_y+1)] == k ||
+					p[((box_x+2)*Size+box_y+2)] == k {
+					goto not_a_option
+				}
+
+				total++
+				if Debug && total < 20 {
+					fmt.Printf("  x %d, y %d, k %d\n", x, y, k)
+				}
+			not_a_option:
+			}
+		}
+	}
+	if Debug {
+		fmt.Printf("in total %d options\n", total)
+	}
+	return total
+}
+
 //
 // // p{i,j}, r{i,k} c{j,k} b{x,k}  x=3 * floor(i/3) + floor(j/3)
 // //
@@ -240,9 +242,9 @@ func (p Problem) Print() {
 // void debugDoubleLinks() {
 //   dlNodet* h = dlCreate(8);
 //
-// #define PRINT_HEADER(h) printf("header l %d r %d\n", h->llink, h->rlink)
+// #define PRINT_HEADER(h) fmt.Printf("header l %d r %d\n", h->llink, h->rlink)
 // #define PRINT_NODE(h, id)                                             \
-//   printf("%6d l %d r %d  %s\n", id, (h + id)->llink, (h + id)->rlink, \
+//   fmt.Printf("%6d l %d r %d  %s\n", id, (h + id)->llink, (h + id)->rlink, \
 //          (h + id)->data);
 //
 //   int id1 = dlCreateNode(h, "a", DL_NO_FREE);
