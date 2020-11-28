@@ -28,6 +28,14 @@ func main() {
 
 	problem.Print()
 	problem.SearchOptions()
+
+	l := NewDoubleLink(7)
+	l.Print()
+
+	fmt.Printf("Hide 2\n")
+
+	l.HideNode(2)
+	l.Print()
 }
 
 //   int options_count = searchOptions(problem);
@@ -230,13 +238,16 @@ type DoubleLink struct {
 
 func NewDoubleLink(total_count int) *DoubleLink {
 	l := &DoubleLink{
-		Count: total_count,
+		Count: 0,
 		Nodes: make([]DoubleLinkNode, 1, total_count+1), // Zero value for the header.
+	}
+	for i:=0; i < total_count; i++ {
+		l.CreateNode(nil)
 	}
 	return l
 }
 
-func (dl *DoubleLink) CreateNode(data interface{}) {
+func (dl *DoubleLink) CreateNode(data interface{}) int {
 	dl.Count++
 	dl.Nodes = append(dl.Nodes, DoubleLinkNode{
 		Id:   dl.Count,
@@ -253,6 +264,27 @@ func (dl *DoubleLink) CreateNode(data interface{}) {
 
 	dl.Nodes[tailId].RLink = nodeId
 	header.LLink = nodeId
+
+	return nodeId
+}
+
+func (dl *DoubleLink) HideNode(id int) {
+	if id > dl.Count {
+		panic("id is too large.")
+	}
+
+	node := &dl.Nodes[id]
+	l := node.LLink
+	r := node.RLink
+
+	dl.Nodes[l].RLink = r
+	dl.Nodes[r].LLink = l
+}
+
+func (dl *DoubleLink) Print() {
+	for _, n := range dl.Nodes {
+		fmt.Printf("Id: %2v, LLink: %2v, RLink: %2v\n", n.Id, n.LLink, n.RLink)
+	}
 }
 
 //
