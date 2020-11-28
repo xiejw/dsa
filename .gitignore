@@ -4,3 +4,6 @@
 
 # outputs
 .build
+
+# ctags
+tags
