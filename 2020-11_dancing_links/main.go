@@ -216,6 +216,45 @@ func (p Problem) SearchOptions() int {
 	return total
 }
 
+type DoubleLinkNode struct {
+	LLink int
+	RLink int
+	Id    int
+	Data  interface{}
+}
+
+type DoubleLink struct {
+	Count int
+	Nodes []DoubleLinkNode
+}
+
+func NewDoubleLink(total_count int) *DoubleLink {
+	l := &DoubleLink{
+		Count: total_count,
+		Nodes: make([]DoubleLinkNode, 1, total_count+1), // Zero value for the header.
+	}
+	return l
+}
+
+func (dl *DoubleLink) CreateNode(data interface{}) {
+	dl.Count++
+	dl.Nodes = append(dl.Nodes, DoubleLinkNode{
+		Id:   dl.Count,
+		Data: data,
+	})
+
+	nodeId := dl.Count
+	node := &dl.Nodes[nodeId]
+	header := &dl.Nodes[0]
+	tailId := header.LLink
+
+	node.LLink = tailId
+	node.RLink = 0
+
+	dl.Nodes[tailId].RLink = nodeId
+	header.LLink = nodeId
+}
+
 //
 // // p{i,j}, r{i,k} c{j,k} b{x,k}  x=3 * floor(i/3) + floor(j/3)
 // //
