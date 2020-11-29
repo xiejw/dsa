@@ -224,11 +224,15 @@ func (p Problem) SearchOptions() int {
 	return total
 }
 
+// -----------------------------------------------------------------------------
+// double link.
+// -----------------------------------------------------------------------------
+
 type DoubleLinkNode struct {
-	LLink int
-	RLink int
-	Id    int
-	Data  interface{}
+	LLink       int
+	RLink       int
+	Id          int // id of current node.
+	VListHeader int // points to the header of vlist
 }
 
 type DoubleLink struct {
@@ -241,17 +245,16 @@ func NewDoubleLink(total_count int) *DoubleLink {
 		Count: 0,
 		Nodes: make([]DoubleLinkNode, 1, total_count+1), // Zero value for the header.
 	}
-	for i:=0; i < total_count; i++ {
-		l.CreateNode(nil)
+	for i := 0; i < total_count; i++ {
+		l.CreateNode()
 	}
 	return l
 }
 
-func (dl *DoubleLink) CreateNode(data interface{}) int {
+func (dl *DoubleLink) CreateNode() int {
 	dl.Count++
 	dl.Nodes = append(dl.Nodes, DoubleLinkNode{
-		Id:   dl.Count,
-		Data: data,
+		Id: dl.Count,
 	})
 
 	nodeId := dl.Count
